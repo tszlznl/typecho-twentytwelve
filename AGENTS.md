@@ -5,14 +5,34 @@ WordPress 默认主题 Twenty Twelve 的 Typecho 移植版。
 ## 仓库结构
 
 ```
-twentytwelve/       — 原始 WordPress 主题（v4.7）
-typecho/            — Typecho 1.2.x 移植主题
-AGENTS.md           — 本文件
+AGENTS.md           — AI 辅助开发指南（语法备忘、架构约定）
+README.md           — 项目说明
+style.css           — 样式文件
+header.php          — 页面头部
+footer.php          — 页面底部
+functions.php       — 主题函数
+index.php           — 首页模板
+archive.php         — 归档页（分类/标签/搜索/日期/作者）
+post.php            — 文章详情
+page.php            — 独立页面
+comments.php        — 评论系统
+sidebar.php         — 侧栏
+content.php         — 文章条目
+content-page.php    — 页面条目
+content-none.php    — 无结果提示
+404.php             — 404 页面
+page-archive.php    — 自定义模板：文章归档
+page-tags.php       — 自定义模板：标签云
+page-search.php     — 自定义模板：搜索
+js/                 — JavaScript
+css/                — 辅助样式（RTL）
+images/             — 背景图片
+screenshot.png      — 主题截图
 ```
 
-## 验证安装
+## 安装
 
-将 `typecho/` 目录复制到 Typecho 安装路径的 `usr/themes/twentytwelve/`，
+将整个目录复制到 Typecho 安装路径的 `usr/themes/twentytwelve/`，
 在后台「控制台 → 外观」启用即可。
 
 ## Typecho 模板语法备忘
@@ -42,12 +62,12 @@ AGENTS.md           — 本文件
 
 ## 侧栏 Widget
 
-Typecho 无动态小工具，侧栏已硬编码四个区域（sidebar.php:2,9,17,25）：
+Typecho 无动态小工具，侧栏已硬编码四个区域（sidebar.php:2,12,22,29）：
 
-- 最新文章：`Widget_Contents_Post_Recent`
+- 最新文章：`Widget_Contents_Post_Recent`，每项显示 `YYYY/MM` 日期 + 标题
 - 最新评论：`Widget_Comments_Recent`
-- 分类列表：`Widget_Metas_Category_List`
-- 按月归档：`Widget_Contents_Post_Date`
+- 分类列表：`Widget_Metas_Category_List`，显示分类名 + 文章数
+- 按月归档：`Widget_Contents_Post_Date`，格式 `YYYY 年 MM 月`
 
 ## 全宽页面
 
@@ -60,9 +80,9 @@ Typecho 无动态小工具，侧栏已硬编码四个区域（sidebar.php:2,9,17
 
 | 文件 | 模板名 | 功能 |
 |------|--------|------|
-| `page-archive.php` | 文章归档 | 按年月列出所有文章标题 |
+| `page-archive.php` | 文章归档 | 按年月列出所有文章标题，≥3 年时顶部显示年份快速跳转 |
 | `page-tags.php` | 标签云 | 显示所有标签列表 |
-| `page-search.php` | 搜索 | 搜索表单，提交后跳转至 Typecho 搜索页 |
+| `page-search.php` | 搜索 | 搜索表单（`<search>` 语义元素 + `type="search"` + `aria-label`），按 `/` 快速聚焦，下方展示热门标签 |
 
 Typecho 也支持通过别名自动匹配模板：创建别名为 `archives` / `tags` / `search` 的页面
 将分别自动调用 `page-archives.php` / `page-tags.php` / `page-search.php`。
@@ -76,8 +96,9 @@ Typecho 也支持通过别名自动匹配模板：创建别名为 `archives` / `
 
 ## CSS 注意事项
 
+- 使用 CSS 变量驱动明暗双主题：`:root`（亮色）+ `[data-theme="dark"]`（暗色），通过 `header.php` 的 FOUC 防护脚本 + `footer.php` 的切换 JS 控制，选择持久化到 `localStorage`
+- 字体通过「中文网字计划」CDN 加载：霞鹜文楷 Bold（`LXGW WenKai`）。离线时 fallback 到系统衬线字体栈
 - 主题不依赖 WP 特有 CSS 类（已清理 `template-front-page`、`custom-background-*`），但保留了 `.gallery*`、`.align*`、`.wp-caption` 等通用内容样式
-- 自托管 Open Sans 字体在 `fonts/` 目录，非 CDN 加载
 - RTL 支持：`css/rtl.css`，需手动切换（未自动加载）
 
 ## 未移植的功能
